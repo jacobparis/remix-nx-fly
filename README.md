@@ -1,4 +1,4 @@
-# New workspace
+# Integrated Nx Monorepo with multiple Remix apps
 
 This repository is fully automated
 - Ephemeral cloud development environment
