@@ -1,3 +1,53 @@
+# https://www.gitpod.io/docs/config-gitpod-file
+
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - name: Restore .env files
+    command: |
+      # Loop through each app in monorepo
+      for d in apps/*/ ; do
+        [ -L "${d%/}" ] && continue
+
+        # indie-stack/ becomes INDIE_STACK_ENV
+        # blues-stack/ becomes BLUES_STACK_ENV
+        env_name=$(echo "${d:9}" | tr '[a-z]' '[A-Z]' | tr '[\-\/]' '_')ENV
+
+        cd "${d}"
+
+        if [ -f .env ]; then
+          # If this workspace already has a .env, don't override it
+          # Local changes survive a workspace being opened and closed but they will not persist between separate workspaces for the same repo
+
+          echo "Found .env in ${d}"
+        else
+          # There is no .env
+          if [ ! -n "${!env_name}" ]; then
+            # Dev has not saved a .env from a previous workspace. Default to the example .env
+            echo "Setting example .env in ${d}"
+
+            cp .env.example .env
+          else
+              # After making changes to .env, run this line to persist it to $ENV
+              #   nx run-many --target=save-env --all
+              #
+              # .env files set this way become the default for all new workspaces for this repo
+
+              echo "Restoring .env in ${d} from Gitpod"
+              echo "${!env_name}" | base64 -d | tee .env > /dev/null
+            fi
+          fi
+
+          cd -
+        done
+
+  - name: Pull images
+    init: docker compose $(find . -name "docker-compose.yml" | sed 's/.*/--file=&/' | sed 's/\n/ /') pull
+
+  - name: Install dependencies
+    init: npm install
+
 vscode:
   extensions:
     - ms-azuretools.vscode-docker
@@ -7,3 +57,4 @@ vscode:
     - oderwat.indent-rainbow
     - Prisma.prisma
     - sleistner.vscode-fileutils
+    - nrwl.angular-console
