@@ -19,7 +19,7 @@
     "express-prometheus-middleware": "^1.2.0",
     "isbot": "^3.6.3",
     "morgan": "^1.10.0",
-    "prom-client": "^14.1.0",
+    "prom-client": "^12.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.2.2",
