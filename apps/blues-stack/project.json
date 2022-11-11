@@ -84,7 +84,7 @@
       "dependsOn": ["deps"],
       "options": {
         "commands": [
-          "flyctl deploy --image registry.fly.io/blues-stack:{args.hash}"
+          "flyctl deploy --image registry.fly.io/dry-sun-1722:{args.hash}"
         ],
         "cwd": "apps/blues-stack"
       }

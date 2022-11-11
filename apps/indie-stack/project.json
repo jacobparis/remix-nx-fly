@@ -84,7 +84,7 @@
       "dependsOn": ["deps"],
       "options": {
         "commands": [
-          "flyctl deploy --image registry.fly.io/indie-stack:{args.hash}"
+          "flyctl deploy --image registry.fly.io/broken-river-7756:{args.hash}"
         ],
         "cwd": "apps/indie-stack"
       }
