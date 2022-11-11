@@ -4,6 +4,10 @@
 
 This is an example of running multiple Remix apps in an Nx integrated monorepo, each with their own Dockerfile and deployed independently based on affected changes.
 
+[Demo Blues Monorepo deployed to Fly](https://dry-sun-1722.fly.dev/)
+
+[Demo Indie Monorepo deployed to Fly](https://broken-river-7756.fly.dev/)
+
 You can run this locally, or in an automated cloud development environment via Gitpod
 
 - .env files for each Remix app can be persisted
