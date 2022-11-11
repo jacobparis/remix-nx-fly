@@ -1,0 +1,54 @@
+        uses: docker/login-action@v2
+        with:
+          registry: registry.fly.io
+          username: x
+          password: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: 🐳 Docker build
+        run: npx nx affected --base=$([[ ${{ github.ref == 'refs/heads/main'}} ]] && echo "origin/main~1" || echo "origin/main") --head=HEAD --target=docker --parallel=1
+        env:
+          INPUT_PUSH: true
+          INPUT_INDIE_STACK_TAGS: registry.fly.io/indie-stack:${{ github.sha }}
+          INPUT_BLUES_STACK_TAGS: registry.fly.io/blues-stack:${{ github.sha }}
+
+  deploy:
+    name: 🚀 Deploy
+    runs-on: ubuntu-latest
+
+    needs:
+      - lint
+      - typecheck
+      - build
+
+    # only deploy main branch on pushes
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push'}}
+
+    steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
+
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: 📥 Download deps
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+          install-command: npm ci --ignore-scripts
+
+      - name: 🐥 Install Fly
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: 🔑 Fly Registry Auth
+        uses: docker/login-action@v2
+        with:
+          registry: registry.fly.io
+          username: x
+          password: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: 🚀 Deploy Production
+        run: npx nx affected --base=main~1 --head=HEAD --target=deploy --parallel=2 --args="--hash=${{ github.sha }}"
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
