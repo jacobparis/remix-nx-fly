@@ -18,3 +18,4 @@ ENV PATH="$FLYCTL_INSTALL/bin:$PATH"
 
 # Install NX CLI
 RUN npm i nx -g
+ENV NX_DAEMON=false

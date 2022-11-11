@@ -1,0 +1,93 @@
+{
+  "targets": {
+    "deps:json": {
+      "executor": "@nrwl/js:tsc",
+      "options": {
+        "main": "apps/indie-stack/deps.ts",
+        "generatePackageJson": true,
+        "outputPath": "apps/indie-stack/temp",
+        "tsConfig": "tsconfig.json",
+        "cwd": "apps/indie-stack",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "updateBuildableProjectDepsInPackageJson": true
+      }
+    },
+    "deps": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["deps:json"],
+      "options": {
+        "commands": [
+          "mv ./temp/package.json package.json",
+          "rm -rf ./temp",
+          "echo \"$(jq --argjson a \"$(cat ../../package.json | jq '.devDependencies')\" '.devDependencies = ($a)' package.json)\" > package.json",
+          "npm --prefix . install --package-lock-only",
+          "cat package.json"
+        ],
+        "cwd": "apps/indie-stack",
+        "parallel": false
+      }
+    },
+
+    "install": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["deps"],
+      "options": {
+        "commands": ["npm --prefix . ci"],
+        "cwd": "apps/indie-stack"
+      }
+    },
+
+    "build": {
+      "executor": "nx:run-script",
+      "dependsOn": ["install"],
+      "options": {
+        "script": "build"
+      }
+    },
+
+    "dev": {
+      "executor": "nx:run-script",
+      "dependsOn": ["install"],
+      "options": {
+        "script": "dev"
+      }
+    },
+
+    "test": {
+      "executor": "nx:run-script",
+      "dependsOn": ["install"],
+      "options": {
+        "script": "test"
+      }
+    },
+
+    "save-env": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "gp env -e INDIE_STACK_ENV=\"$(base64 .env | tr -d '\n')\""
+        ],
+        "cwd": "apps/indie-stack"
+      }
+    },
+    "docker": {
+      "executor": "@nx-tools/nx-docker:build",
+      "dependsOn": ["deps"],
+      "options": {
+        "context": "apps/indie-stack",
+        "push": false,
+        "cwd": "apps/indie-stack"
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["deps"],
+      "options": {
+        "commands": [
+          "flyctl deploy --image registry.fly.io/indie-stack:{args.hash}"
+        ],
+        "cwd": "apps/indie-stack"
+      }
+    }
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "targets": {
+    "deps:json": {
+      "executor": "@nrwl/js:tsc",
+      "options": {
+        "main": "apps/blues-stack/deps.ts",
+        "generatePackageJson": true,
+        "outputPath": "apps/blues-stack/temp",
+        "tsConfig": "tsconfig.json",
+        "cwd": "apps/blues-stack",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "updateBuildableProjectDepsInPackageJson": true
+      }
+    },
+    "deps": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["deps:json"],
+      "options": {
+        "commands": [
+          "mv ./temp/package.json package.json",
+          "rm -rf ./temp",
+          "echo \"$(jq --argjson a \"$(cat ../../package.json | jq '.devDependencies')\" '.devDependencies = ($a)' package.json)\" > package.json",
+          "npm --prefix . install --package-lock-only",
+          "cat package.json"
+        ],
+        "cwd": "apps/blues-stack",
+        "parallel": false
+      }
+    },
+
+    "install": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["deps"],
+      "options": {
+        "commands": ["npm --prefix . ci"],
+        "cwd": "apps/blues-stack"
+      }
+    },
+
+    "build": {
+      "executor": "nx:run-script",
+      "dependsOn": ["install"],
+      "options": {
+        "script": "build"
+      }
+    },
+
+    "dev": {
+      "executor": "nx:run-script",
+      "dependsOn": ["install"],
+      "options": {
+        "script": "dev"
+      }
+    },
+
+    "test": {
+      "executor": "nx:run-script",
+      "dependsOn": ["install"],
+      "options": {
+        "script": "test"
+      }
+    },
+
+    "save-env": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "gp env -e BLUES_STACK_ENV=\"$(base64 .env | tr -d '\n')\""
+        ],
+        "cwd": "apps/blues-stack"
+      }
+    },
+    "docker": {
+      "executor": "@nx-tools/nx-docker:build",
+      "dependsOn": ["deps"],
+      "options": {
+        "context": "apps/blues-stack",
+        "push": false,
+        "cwd": "apps/blues-stack"
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["deps"],
+      "options": {
+        "commands": [
+          "flyctl deploy --image registry.fly.io/blues-stack:{args.hash}"
+        ],
+        "cwd": "apps/blues-stack"
+      }
+    }
+  }
+}
