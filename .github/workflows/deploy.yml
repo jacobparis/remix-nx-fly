@@ -95,8 +95,8 @@ jobs:
         run: npx nx affected --base=$([[ ${{ github.ref == 'refs/heads/main'}} ]] && echo "origin/main~1" || echo "origin/main") --head=HEAD --target=docker --parallel=1
         env:
           INPUT_PUSH: true
-          INPUT_INDIE_STACK_TAGS: registry.fly.io/indie-stack:${{ github.sha }}
-          INPUT_BLUES_STACK_TAGS: registry.fly.io/blues-stack:${{ github.sha }}
+          INPUT_INDIE_STACK_TAGS: registry.fly.io/broken-river-7756:${{ github.sha }}
+          INPUT_BLUES_STACK_TAGS: registry.fly.io/dry-sun-1722:${{ github.sha }}
 
   deploy:
     name: 🚀 Deploy
