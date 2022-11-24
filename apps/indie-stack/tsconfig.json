@@ -17,6 +17,11 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     // Remix takes care of building everything in `remix build`.
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "~/*": ["apps/indie-stack/app/*"],
+      "~blues-stack/*": ["apps/blues-stack/app/*"],
+      "@remix-nx-fly/ui-components": ["libs/ui-components/src/index.ts"]
+    }
   }
 }

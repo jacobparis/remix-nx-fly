@@ -23,7 +23,7 @@
     "typeRoots": ["../types", "../node_modules/@types"],
 
     "paths": {
-      "~indie-stack/*": ["../app/*"]
+      "~/*": ["../app/*"]
     }
   }
 }
