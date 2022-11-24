@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y openssl
 # Install all node_modules, including dev dependencies
 FROM base as deps
 
-WORKDIR /myapp
+WORKDIR /myapp/apps/blues-stack
 
 ADD package.json .npmrc ./
 RUN npm install --production=false
@@ -18,9 +18,9 @@ RUN npm install --production=false
 # Setup production node_modules
 FROM base as production-deps
 
-WORKDIR /myapp
+WORKDIR /myapp/apps/blues-stack
 
-COPY --from=deps /myapp/node_modules /myapp/node_modules
+COPY --from=deps /myapp/apps/blues-stack/node_modules /myapp/apps/blues-stack/node_modules
 ADD package.json .npmrc ./
 RUN npm prune --production
 
@@ -29,24 +29,30 @@ FROM base as build
 
 WORKDIR /myapp
 
-COPY --from=deps /myapp/node_modules /myapp/node_modules
+ADD temp/tsconfig.base.json .
+ADD temp/libs ./libs/
+
+WORKDIR /myapp/apps/blues-stack
+
+COPY --from=deps /myapp/apps/blues-stack/node_modules /myapp/apps/blues-stack/node_modules
 
 ADD prisma ./prisma
 RUN npx prisma generate
 
 ADD . .
+
 RUN npm run build
 
 # Finally, build the production image with minimal footprint
 FROM base
 
-WORKDIR /myapp
+WORKDIR /myapp/apps/blues-stack
 
-COPY --from=production-deps /myapp/node_modules /myapp/node_modules
-COPY --from=build /myapp/node_modules/.prisma /myapp/node_modules/.prisma
+COPY --from=production-deps /myapp/apps/blues-stack/node_modules /myapp/apps/blues-stack/node_modules
+COPY --from=build /myapp/apps/blues-stack/node_modules/.prisma /myapp/apps/blues-stack/node_modules/.prisma
 
-COPY --from=build /myapp/build /myapp/build
-COPY --from=build /myapp/public /myapp/public
+COPY --from=build /myapp/apps/blues-stack/build /myapp/apps/blues-stack/build
+COPY --from=build /myapp/apps/blues-stack/public /myapp/apps/blues-stack/public
 ADD . .
 
 CMD ["npm", "start"]

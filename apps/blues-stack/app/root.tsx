@@ -8,6 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { UiComponent } from "@remix-nx-fly/ui-components";
 
 import { getUser } from "./session.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -36,6 +37,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
+        <UiComponent />
         <Outlet />
         <ScrollRestoration />
         <Scripts />

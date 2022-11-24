@@ -1,25 +1,29 @@
 {
-  "exclude": ["./cypress","./cypress.config.ts"],
+  "extends": "../../tsconfig.base.json",
+  "exclude": ["./cypress", "./cypress.config.ts"],
   "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
-    "types": ["vitest/globals"],
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
     "target": "ES2019",
-    "strict": true,
     "allowJs": true,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
+    "importHelpers": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "skipDefaultLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "types": ["vitest/globals"],
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": ["apps/blues-stack/app/*"],
+      "@remix-nx-fly/ui-components": ["libs/ui-components/src/index.ts"]
     },
-    "skipLibCheck": true,
-
     // Remix takes care of building everything in `remix build`.
     "noEmit": true
   }

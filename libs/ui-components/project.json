@@ -1,0 +1,23 @@
+{
+  "name": "ui-components",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ui-components/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/ui-components/**/*.ts"]
+      }
+    },
+    "install": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["npm install"],
+        "cwd": "libs/ui-components"
+      }
+    }
+  },
+  "tags": []
+}
