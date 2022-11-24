@@ -1,4 +1,5 @@
 {
+  "implicitDependencies": ["ui-components"],
   "targets": {
     "deps:json": {
       "executor": "@nrwl/js:tsc",
@@ -72,13 +73,29 @@
     },
     "docker": {
       "executor": "@nx-tools/nx-docker:build",
-      "dependsOn": ["deps"],
+      "dependsOn": ["docker:prepare"],
       "options": {
         "context": "apps/indie-stack",
         "push": false,
         "cwd": "apps/indie-stack"
       }
     },
+
+    "docker:prepare": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        { "projects": "self", "target": "deps" },
+        { "projects": "dependencies", "target": "install" }
+      ],
+      "options": {
+        "commands": [
+          "mkdir apps/indie-stack/temp",
+          "cp tsconfig.base.json apps/indie-stack/temp/tsconfig.base.json",
+          "cp libs -r apps/indie-stack/temp/libs"
+        ]
+      }
+    },
+
     "deploy": {
       "executor": "nx:run-commands",
       "dependsOn": ["deps"],

@@ -1,4 +1,5 @@
 {
+  "implicitDependencies": ["ui-components"],
   "targets": {
     "deps:json": {
       "executor": "@nrwl/js:tsc",
@@ -39,7 +40,7 @@
 
     "build": {
       "executor": "nx:run-script",
-      "dependsOn": ["install"],
+      "dependsOn": ["^install"],
       "options": {
         "script": "build"
       }
@@ -80,13 +81,29 @@
     },
     "docker": {
       "executor": "@nx-tools/nx-docker:build",
-      "dependsOn": ["deps"],
+      "dependsOn": ["docker:prepare"],
       "options": {
         "context": "apps/blues-stack",
         "push": false,
         "cwd": "apps/blues-stack"
       }
     },
+
+    "docker:prepare": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        { "projects": "self", "target": "deps" },
+        { "projects": "dependencies", "target": "install" }
+      ],
+      "options": {
+        "commands": [
+          "mkdir apps/blues-stack/temp",
+          "cp tsconfig.base.json apps/blues-stack/temp/tsconfig.base.json",
+          "cp libs -r apps/blues-stack/temp/libs"
+        ]
+      }
+    },
+
     "deploy": {
       "executor": "nx:run-commands",
       "dependsOn": ["deps"],
