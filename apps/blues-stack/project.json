@@ -97,10 +97,12 @@
       ],
       "options": {
         "commands": [
+          "rm -rf apps/blues-stack/temp",
           "mkdir apps/blues-stack/temp",
           "cp tsconfig.base.json apps/blues-stack/temp/tsconfig.base.json",
           "cp libs -r apps/blues-stack/temp/libs"
-        ]
+        ],
+        "parallel": false
       }
     },
 
