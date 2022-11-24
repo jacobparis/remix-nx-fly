@@ -47,9 +47,17 @@
 
     "dev": {
       "executor": "nx:run-script",
-      "dependsOn": ["install"],
+      "dependsOn": ["install", "dev:db"],
       "options": {
         "script": "dev"
+      }
+    },
+
+    "dev:db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["docker compose up -d"],
+        "cwd": "apps/blues-stack"
       }
     },
 
