@@ -37,7 +37,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-      <UiComponent></UiComponent>
+        <UiComponent />
         <Outlet />
         <ScrollRestoration />
         <Scripts />

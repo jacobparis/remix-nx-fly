@@ -10,6 +10,7 @@ node_modules
 /build
 /public/build
 .env
+temp
 
 /cypress/screenshots
 /cypress/videos
