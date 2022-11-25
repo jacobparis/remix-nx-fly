@@ -10,13 +10,6 @@
       "options": {
         "lintFilePatterns": ["libs/ui-components/**/*.ts"]
       }
-    },
-    "install": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "commands": ["npm install"],
-        "cwd": "libs/ui-components"
-      }
     }
   },
   "tags": []

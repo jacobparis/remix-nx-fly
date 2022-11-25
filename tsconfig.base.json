@@ -13,7 +13,12 @@
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "~indie-stack/*": ["apps/indie-stack/app/*"],
+      "~blues-stack/*": ["apps/blues-stack/app/*"],
+      "@remix-nx-fly/ui-components": ["libs/ui-components/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
